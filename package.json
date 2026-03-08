@@ -1,11 +1,23 @@
 {
   "name": "worktree-up",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Copy local setup into a Git worktree and run repository bootstrap commands.",
-  "type": "module",
+  "keywords": [
+    "bootstrap",
+    "cli",
+    "git",
+    "setup",
+    "worktree"
+  ],
+  "license": "MIT",
   "bin": {
     "worktree-up": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -15,14 +27,6 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "engines": {
-    "node": ">=20"
-  },
-  "packageManager": "pnpm@10.6.5",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -30,14 +34,6 @@
     "test:watch": "vitest",
     "prepack": "pnpm build"
   },
-  "keywords": [
-    "cli",
-    "git",
-    "worktree",
-    "bootstrap",
-    "setup"
-  ],
-  "license": "MIT",
   "dependencies": {
     "execa": "^9.5.2",
     "fast-glob": "^3.3.3",
@@ -47,5 +43,9 @@
     "@types/node": "^22.13.10",
     "typescript": "^5.8.2",
     "vitest": "^3.0.8"
-  }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.6.5"
 }
