@@ -37,8 +37,10 @@ Or create a repo root `worktree-up.json` (works for non-JS repos):
 }
 ```
 
+> Commiting the config is not necessary.
+
 > [!IMPORTANT]
-> Both `worktree-up.json` and `package.json."worktree-up"` configs cannot exist, `worktree-up` will throw an error.
+> Both `worktree-up.json` and config in `package.json` cannot exist, only use single
 
 ### 2. Create a worktree and run it
 
