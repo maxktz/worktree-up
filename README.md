@@ -4,14 +4,6 @@
 
 ## Usage
 
-```bash
-npx -y worktree-up
-```
-
-`worktree-up` must be run inside a Git checkout or linked worktree.
-
-## Example
-
 ### 1. Add config
 
 Put this in your main repository checkout (not the worktree):
@@ -37,42 +29,51 @@ Or create a repo root `worktree-up.json` (works for non-JS repos):
 }
 ```
 
-> Commiting the config is not necessary.
+> Committing the config is not necessary if it already exists in your main checkout on disk. `worktree-up` reads config from the source/main checkout first.
 
 > [!IMPORTANT]
 > Both `worktree-up.json` and config in `package.json` cannot exist, only use single
 
-### 2. Create a worktree and run it
+### 2. Create a git worktree
 
 From your main checkout:
 
 ```bash
 git worktree add ../my-repo-feature -b feat/somefeature
 cd ../my-repo-feature
+```
+
+### 3. Run `worktree-up`
+
+```bash
 npx -y worktree-up
 ```
+
+`worktree-up` sees your source/main tree automaitcally and will copy files from it.
 
 Expected output:
 
 ```
-[worktree-up] Inspecting checkout from /path/to/my-repo-fix
-[worktree-up] Current checkout: /path/to/my-repo-fix
-[worktree-up] Source checkout: /path/to/my-repo
-[worktree-up] Loaded configuration from /path/to/my-repo-fix/package.json
+[worktree-up] Inspecting checkout from ~/my-repo-feature
+[worktree-up] Current checkout: ~/my-repo-feature
+[worktree-up] Source checkout: ~/my-repo
+[worktree-up] Loaded configuration from ~/my-repo/package.json
 [worktree-up] Copied .env.local
 [worktree-up] Copied .claude/settings.local.json
 [worktree-up] Copy summary: 2 copied, 0 skipped.
 [worktree-up] Running setup command: pnpm install
-[worktree-up] Running setup command: pnpm db:generate
 [worktree-up] Run summary: 2 command(s) completed.
 [worktree-up] Finished.
 ```
+
+> That's it!
 
 ## Behavior
 
 - detects the current Git checkout root
 - finds the repository's source checkout from Git worktree metadata
-- loads config from `worktree-up.json` or `package.json`
+- loads config from the source/main checkout first, then falls back to the current worktree
+- supports `worktree-up.json` or `package.json`
 - copies matched files and symlinks without overwriting anything already present
 - runs configured setup commands sequentially in the current worktree
 
