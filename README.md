@@ -1,5 +1,7 @@
 # worktree-up
 
+<img src="assets/worktree-up.png" alt="worktree-up demo" width="900" />
+
 `worktree-up` copies local setup files from a repository's main checkout into the current Git worktree, then runs repository-defined setup commands.
 
 ## Usage
