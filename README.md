@@ -31,7 +31,7 @@ Or create a repo root `worktree-up.json` (works for non-JS repos):
 }
 ```
 
-> Committing the config is not necessary if it already exists in your main checkout on disk. `worktree-up` reads config from the source/main checkout first.
+> Committing the config is not required for it to work.
 
 > [!IMPORTANT]
 > Both `worktree-up.json` and config in `package.json` cannot exist, only use single
