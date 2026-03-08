@@ -20,7 +20,7 @@ If using `package.json`, add this to the root `package.json`:
 
 ```json
 {
-  // ...rest of your package.json
+  /** ...rest of your package.json */
   "worktree-up": {
     "copy": ["**/.env.local", "**/.env", "**/settings.local.json"],
     "run": ["pnpm install", "pnpm db:generate"]
