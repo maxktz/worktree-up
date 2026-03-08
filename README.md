@@ -52,7 +52,7 @@ npx worktree-up
 
 Expected output:
 
-```json
+```
 [worktree-up] Inspecting checkout from /path/to/my-repo-fix
 [worktree-up] Current checkout: /path/to/my-repo-fix
 [worktree-up] Source checkout: /path/to/my-repo
