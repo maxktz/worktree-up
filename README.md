@@ -5,7 +5,7 @@
 ## Usage
 
 ```bash
-npx worktree-up
+npx -y worktree-up
 ```
 
 `worktree-up` must be run inside a Git checkout or linked worktree.
@@ -47,7 +47,7 @@ From your main checkout:
 ```bash
 git worktree add ../my-repo-feature -b feat/somefeature
 cd ../my-repo-feature
-npx worktree-up
+npx -y worktree-up
 ```
 
 Expected output:
