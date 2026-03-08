@@ -118,4 +118,65 @@ describe('loadWorktreeUpConfig', () => {
 
     await expect(loadWorktreeUpConfig(repoRoot)).rejects.toThrow(UserError);
   });
+
+  it('prefers config from the source checkout over the current worktree', async () => {
+    const sourceRoot = await mkdtemp(path.join(os.tmpdir(), 'worktree-up-source-config-'));
+    const worktreeRoot = await mkdtemp(path.join(os.tmpdir(), 'worktree-up-worktree-config-'));
+    tempDirectories.push(sourceRoot, worktreeRoot);
+
+    await writeFile(
+      path.join(sourceRoot, 'worktree-up.json'),
+      JSON.stringify(
+        {
+          copy: ['source.env'],
+          run: ['pnpm install']
+        },
+        null,
+        2
+      )
+    );
+    await writeFile(
+      path.join(worktreeRoot, 'worktree-up.json'),
+      JSON.stringify(
+        {
+          copy: ['worktree.env'],
+          run: ['pnpm install']
+        },
+        null,
+        2
+      )
+    );
+
+    const loaded = await loadWorktreeUpConfig([sourceRoot, worktreeRoot]);
+    expect(loaded.configPath).toBe(path.join(sourceRoot, 'worktree-up.json'));
+    expect(loaded.config).toEqual({
+      copy: ['source.env'],
+      run: ['pnpm install']
+    });
+  });
+
+  it('falls back to the current worktree when the source checkout has no config', async () => {
+    const sourceRoot = await mkdtemp(path.join(os.tmpdir(), 'worktree-up-source-empty-'));
+    const worktreeRoot = await mkdtemp(path.join(os.tmpdir(), 'worktree-up-worktree-fallback-'));
+    tempDirectories.push(sourceRoot, worktreeRoot);
+
+    await writeFile(
+      path.join(worktreeRoot, 'worktree-up.json'),
+      JSON.stringify(
+        {
+          copy: ['fallback.env'],
+          run: ['mise install']
+        },
+        null,
+        2
+      )
+    );
+
+    const loaded = await loadWorktreeUpConfig([sourceRoot, worktreeRoot]);
+    expect(loaded.configPath).toBe(path.join(worktreeRoot, 'worktree-up.json'));
+    expect(loaded.config).toEqual({
+      copy: ['fallback.env'],
+      run: ['mise install']
+    });
+  });
 });

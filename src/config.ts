@@ -49,24 +49,9 @@ export function parseWorktreeUpConfig(value: unknown): WorktreeUpConfig {
   return result.data;
 }
 
-async function tryReadJsonFile(filePath: string): Promise<unknown | undefined> {
-  try {
-    const raw = await readFile(filePath, 'utf8');
-    return JSON.parse(raw) as unknown;
-  } catch (error) {
-    const nodeError = error as NodeJS.ErrnoException;
-
-    if (nodeError.code === 'ENOENT') {
-      return undefined;
-    }
-
-    throw new UserError(`Failed to parse ${filePath} as JSON.`);
-  }
-}
-
-export async function loadWorktreeUpConfig(
+async function loadConfigFromRepoRoot(
   repoRoot: string
-): Promise<{ configPath: string; config: WorktreeUpConfig }> {
+): Promise<{ configPath: string; config: WorktreeUpConfig } | undefined> {
   const packageJsonPath = path.join(repoRoot, 'package.json');
   const standaloneConfigPath = path.join(repoRoot, 'worktree-up.json');
 
@@ -101,7 +86,43 @@ export async function loadWorktreeUpConfig(
     };
   }
 
+  return undefined;
+}
+
+async function tryReadJsonFile(filePath: string): Promise<unknown | undefined> {
+  try {
+    const raw = await readFile(filePath, 'utf8');
+    return JSON.parse(raw) as unknown;
+  } catch (error) {
+    const nodeError = error as NodeJS.ErrnoException;
+
+    if (nodeError.code === 'ENOENT') {
+      return undefined;
+    }
+
+    throw new UserError(`Failed to parse ${filePath} as JSON.`);
+  }
+}
+
+export async function loadWorktreeUpConfig(
+  repoRoots: string | string[]
+): Promise<{ configPath: string; config: WorktreeUpConfig }> {
+  const searchRoots = Array.from(
+    new Set((Array.isArray(repoRoots) ? repoRoots : [repoRoots]).map((repoRoot) => path.resolve(repoRoot)))
+  );
+
+  for (const repoRoot of searchRoots) {
+    const loaded = await loadConfigFromRepoRoot(repoRoot);
+    if (loaded) {
+      return loaded;
+    }
+  }
+
+  const expectedLocations = searchRoots
+    .flatMap((repoRoot) => [path.join(repoRoot, 'worktree-up.json'), path.join(repoRoot, 'package.json')])
+    .join(', ');
+
   throw new UserError(
-    `Missing configuration. Add "worktree-up" to ${packageJsonPath} or create ${standaloneConfigPath}.`
+    `Missing configuration. Checked: ${expectedLocations}.`
   );
 }

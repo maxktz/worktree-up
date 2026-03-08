@@ -19,7 +19,10 @@ export async function runWorktreeUp(options: RunWorktreeUpOptions = {}): Promise
   logger.info(`Current checkout: ${checkoutContext.currentRoot}`);
   logger.info(`Source checkout: ${checkoutContext.sourceRoot}`);
 
-  const { configPath, config } = await loadWorktreeUpConfig(checkoutContext.currentRoot);
+  const { configPath, config } = await loadWorktreeUpConfig([
+    checkoutContext.sourceRoot,
+    checkoutContext.currentRoot
+  ]);
   logger.info(`Loaded configuration from ${configPath}`);
 
   if (config.copy.length === 0) {
